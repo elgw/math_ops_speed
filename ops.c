@@ -135,19 +135,19 @@ void op_floor(const double * restrict A, const double * restrict B, double * res
     C[kk] = floor(A[kk]); 
 }
 
-void op_if(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+void op_max(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
   {
     if(A[kk] > B[kk])
     {
-      C[kk] = 1;
+      C[kk] = A[kk];
     } else {
-      C[kk] = -1;
+      C[kk] = B[kk];
     }
   }
 }
 
-/* Operations that have to be typecasted */
+/* Non-double type double */
 
 void op_isnormal(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
@@ -195,7 +195,7 @@ int main(int argc, char ** argv)
     {"isnan",     op_isnan,    0},
     {"ceil",      op_ceil,     0},
     {"floor",     op_floor,    0},
-    {"""if""",    op_if,       0},
+    {"""max""",    op_max,       0},
     {NULL,        NULL,        0},
   };
 
