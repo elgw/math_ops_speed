@@ -135,16 +135,28 @@ void op_floor(const double * restrict A, const double * restrict B, double * res
     C[kk] = floor(A[kk]); 
 }
 
+void op_if(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+  {
+    if(A[kk] > B[kk])
+    {
+      C[kk] = 1;
+    } else {
+      C[kk] = -1;
+    }
+  }
+}
+
 /* Operations that have to be typecasted */
 
 void op_isnormal(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = (int) isnormal(A[kk]); 
+    C[kk] = (double) isnormal(A[kk]); 
 }
 
 void op_isnan(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = (int) isnan(A[kk]); 
+    C[kk] = (double) isnan(A[kk]); 
 }
 
 
@@ -183,6 +195,7 @@ int main(int argc, char ** argv)
     {"isnan",     op_isnan,    0},
     {"ceil",      op_ceil,     0},
     {"floor",     op_floor,    0},
+    {"""if""",    op_if,       0},
     {NULL,        NULL,        0},
   };
 
@@ -206,18 +219,18 @@ int main(int argc, char ** argv)
 
   // Warm up 
   // - get cache state in order
-   tests[0].fun(A,B,C, N); 
+  tests[0].fun(A,B,C, N); 
 
   for(int kk = 0; kk<nCycles; kk++)
   {
     printf("."); fflush(stdout);
-  for(int idx = 0 ; idx<nTests; idx++)
-  { 
-    clock_gettime(CLOCK_REALTIME, &ts);
-    tests[idx].fun(A,B,C,N);
-    clock_gettime(CLOCK_REALTIME, &te);
-    tests[idx].time += clockdiff(&ts, &te);
-  }
+    for(int idx = 0 ; idx<nTests; idx++)
+    { 
+      clock_gettime(CLOCK_REALTIME, &ts);
+      tests[idx].fun(A,B,C,N);
+      clock_gettime(CLOCK_REALTIME, &te);
+      tests[idx].time += clockdiff(&ts, &te);
+    }
   }
   printf("\n");
 
