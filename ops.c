@@ -11,6 +11,16 @@ typedef struct{
   double time;
 } optest;
 
+void hline(int w)
+{
+  for(int kk = 0; kk<w; kk++)
+  {
+    printf("\x1b(0%c\x1b(B", (int) 0x71 );
+  }
+  printf("\n");
+  return;
+}
+
 
 static double clockdiff(struct timespec* start, struct timespec * finish)
 {
@@ -54,12 +64,52 @@ void op_sin(const double * restrict A, const double * restrict B, double * restr
     C[kk] = sin(A[kk]); 
 }
 
+void op_sinh(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = sinh(A[kk]); 
+}
+
+void op_log(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = log(A[kk]); 
+}
+
+void op_log10(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = log10(A[kk]); 
+}
+
+void op_copysign(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = copysign(A[kk], B[kk]); 
+}
+
+void op_pow(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = pow(A[kk], B[kk]); 
+}
+
+void op_exp(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = exp(A[kk]); 
+}
+
+void op_tan(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = tan(A[kk]); 
+}
+
+void op_tanh(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = tanh(A[kk]); 
+}
+
 
 
 int main(int argc, char ** argv)
 {
 
-  size_t N = (size_t) 1e6;
+  size_t N = (size_t) 1e5;
 
   if(argc>1)
   {
@@ -67,17 +117,24 @@ int main(int argc, char ** argv)
   }
 
   int nCycles = 10;
-  N /= nCycles;
 
   optest tests[] = {
-    {"plus",  op_plus,  0},
-    {"minus", op_minus, 0},
-    {"div",   op_div,   0},
-    {"mult",  op_mult,  0},
-    {"sqrt",  op_sqrt,  0},
-    {"cbrt",  op_cbrt,  0},
-    {"sin",   op_sin,   0},
-    {NULL,    NULL,     0}
+    {"plus",     op_plus,     0},
+    {"minus",    op_minus,    0},
+    {"div",      op_div,      0},
+    {"mult",     op_mult,     0},
+    {"sqrt",     op_sqrt,     0},
+    {"cbrt",     op_cbrt,     0},
+    {"sin",      op_sin,      0},
+    {"sinh",     op_sinh,     0},
+    {"log",      op_log,      0},
+    {"log10",    op_log10,    0},
+    {"copysign", op_copysign, 0},
+    {"pow",      op_pow,      0},
+    {"exp",      op_exp,      0},
+    {"tan",      op_tan,      0},
+    {"tanh",     op_tanh,     0},
+    {NULL,       NULL,        0},
   };
 
   int nTests = 0;
@@ -122,10 +179,11 @@ int main(int argc, char ** argv)
     { mintime = tests[idx].time; }
   }
 
-  printf("op \t time (s) \t norm time \t op/s\n");
+  printf("%10s %10s %10s %14s\n", "operator", "time (s)", "rel. time", "ops/s");
+  hline(47);
   for(int idx = 0 ; idx<nTests; idx++)
   { 
-    printf("%s \t %f \t %f \t %e\n", tests[idx].name, tests[idx].time, tests[idx].time/mintime, (nCycles*N)/tests[idx].time);
+    printf("%10s %10.6f %10.6f %14.6e\n", tests[idx].name, tests[idx].time, tests[idx].time/mintime, (nCycles*N)/tests[idx].time);
   }
 
   free(A);
