@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <unistd.h>
 
 typedef void (*mop)(const double * restrict, const double * restrict , double * restrict , const size_t );
 
@@ -64,6 +65,11 @@ void op_sin(const double * restrict A, const double * restrict B, double * restr
     C[kk] = sin(A[kk]); 
 }
 
+void op_asin(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = asin(A[kk]); 
+}
+
 void op_sinh(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
     C[kk] = sinh(A[kk]); 
@@ -99,11 +105,47 @@ void op_tan(const double * restrict A, const double * restrict B, double * restr
     C[kk] = tan(A[kk]); 
 }
 
+void op_atan(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = tan(A[kk]); 
+}
+
 void op_tanh(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
     C[kk] = tanh(A[kk]); 
 }
 
+void op_round(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = round(A[kk]); 
+}
+
+void op_nearbyint(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = nearbyint(A[kk]); 
+}
+
+void op_ceil(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = ceil(A[kk]); 
+}
+
+void op_floor(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = floor(A[kk]); 
+}
+
+/* Operations that have to be typecasted */
+
+void op_isnormal(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = (int) isnormal(A[kk]); 
+}
+
+void op_isnan(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = (int) isnan(A[kk]); 
+}
 
 
 int main(int argc, char ** argv)
@@ -119,22 +161,29 @@ int main(int argc, char ** argv)
   int nCycles = 10;
 
   optest tests[] = {
-    {"plus",     op_plus,     0},
-    {"minus",    op_minus,    0},
-    {"div",      op_div,      0},
-    {"mult",     op_mult,     0},
-    {"sqrt",     op_sqrt,     0},
-    {"cbrt",     op_cbrt,     0},
-    {"sin",      op_sin,      0},
-    {"sinh",     op_sinh,     0},
-    {"log",      op_log,      0},
-    {"log10",    op_log10,    0},
-    {"copysign", op_copysign, 0},
-    {"pow",      op_pow,      0},
-    {"exp",      op_exp,      0},
-    {"tan",      op_tan,      0},
-    {"tanh",     op_tanh,     0},
-    {NULL,       NULL,        0},
+    {"plus",      op_plus,     0},
+    {"minus",     op_minus,    0},
+    {"div",       op_div,      0},
+    {"mult",      op_mult,     0},
+    {"sqrt",      op_sqrt,     0},
+    {"cbrt",      op_cbrt,     0},
+    {"sin",       op_sin,      0},
+    {"asin",      op_sin,      0},
+    {"sinh",      op_sinh,     0},
+    {"log",       op_log,      0},
+    {"log10",     op_log10,    0},
+    {"copysign",  op_copysign, 0},
+    {"pow",       op_pow,      0},
+    {"exp",       op_exp,      0},
+    {"tan",       op_tan,      0},
+    {"atan",      op_tan,      0},
+    {"round",     op_round,     0},
+    {"nearbyint", op_nearbyint,     0},
+    {"isnormal",  op_isnormal, 0},
+    {"isnan",     op_isnan,    0},
+    {"ceil",      op_ceil,     0},
+    {"floor",     op_floor,    0},
+    {NULL,        NULL,        0},
   };
 
   int nTests = 0;
