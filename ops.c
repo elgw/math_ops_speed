@@ -3,6 +3,8 @@
 #include <math.h>
 #include <time.h>
 #include <unistd.h>
+#include <x86intrin.h>
+#include <stdint.h>
 
 typedef void (*mop)(const double * restrict, const double * restrict , double * restrict , const size_t );
 
@@ -10,7 +12,20 @@ typedef struct{
   char * name;
   mop fun;
   double time;
+  uint64_t nCycles;
 } optest;
+
+int optest_sort_by_time(const void * A, const void * B)
+{
+  optest * opA = (optest *) A;
+  optest * opB = (optest *) B;
+
+  if(opA->time > opB->time)
+    return 1;
+  if(opA->time < opB->time)
+    return -1;
+  return 0;
+}
 
 void hline(int w)
 {
@@ -21,7 +36,6 @@ void hline(int w)
   printf("\n");
   return;
 }
-
 
 static double clockdiff(struct timespec* start, struct timespec * finish)
 {
@@ -107,7 +121,7 @@ void op_tan(const double * restrict A, const double * restrict B, double * restr
 
 void op_atan(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = tan(A[kk]); 
+    C[kk] = atan(A[kk]); 
 }
 
 void op_tanh(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
@@ -147,7 +161,7 @@ void op_max(const double * restrict A, const double * restrict B, double * restr
   }
 }
 
-/* Non-double type double */
+/* Non-double operators */
 
 void op_isnormal(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
@@ -159,6 +173,10 @@ void op_isnan(const double * restrict A, const double * restrict B, double * res
     C[kk] = (double) isnan(A[kk]); 
 }
 
+void op_isinf(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+  for(size_t kk = 0; kk < N; kk++)
+    C[kk] = (double) isinf(A[kk]); 
+}
 
 int main(int argc, char ** argv)
 {
@@ -170,7 +188,7 @@ int main(int argc, char ** argv)
     N = atol(argv[1]);
   }
 
-  int nCycles = 10;
+  int nRepeats = 10;
 
   optest tests[] = {
     {"plus",      op_plus,     0},
@@ -180,7 +198,7 @@ int main(int argc, char ** argv)
     {"sqrt",      op_sqrt,     0},
     {"cbrt",      op_cbrt,     0},
     {"sin",       op_sin,      0},
-    {"asin",      op_sin,      0},
+    {"asin",      op_asin,      0},
     {"sinh",      op_sinh,     0},
     {"log",       op_log,      0},
     {"log10",     op_log10,    0},
@@ -188,14 +206,15 @@ int main(int argc, char ** argv)
     {"pow",       op_pow,      0},
     {"exp",       op_exp,      0},
     {"tan",       op_tan,      0},
-    {"atan",      op_tan,      0},
+    {"atan",      op_atan,      0},
     {"round",     op_round,     0},
     {"nearbyint", op_nearbyint,     0},
     {"isnormal",  op_isnormal, 0},
     {"isnan",     op_isnan,    0},
+    {"isinf",     op_isinf,    0},
     {"ceil",      op_ceil,     0},
     {"floor",     op_floor,    0},
-    {"""max""",    op_max,       0},
+    {"'max'",     op_max,       0},
     {NULL,        NULL,        0},
   };
 
@@ -221,14 +240,15 @@ int main(int argc, char ** argv)
   // - get cache state in order
   tests[0].fun(A,B,C, N); 
 
-  for(int kk = 0; kk<nCycles; kk++)
+  for(int kk = 0; kk<nRepeats; kk++)
   {
-    printf("."); fflush(stdout);
     for(int idx = 0 ; idx<nTests; idx++)
     { 
+      tests[idx].nCycles = __rdtsc();
       clock_gettime(CLOCK_REALTIME, &ts);
       tests[idx].fun(A,B,C,N);
       clock_gettime(CLOCK_REALTIME, &te);
+      tests[idx].nCycles = __rdtsc() - tests[idx].nCycles;
       tests[idx].time += clockdiff(&ts, &te);
     }
   }
@@ -241,11 +261,13 @@ int main(int argc, char ** argv)
     { mintime = tests[idx].time; }
   }
 
-  printf("%10s %10s %10s %14s\n", "operator", "time (s)", "rel. time", "ops/s");
-  hline(47);
+  qsort(tests, nTests, sizeof(optest), optest_sort_by_time);
+
+  printf("%10s %10s %10s %11s %10s\n", "operator", "time (s)", "rel. time", "op/s", "cyc/op");
+  hline(58);
   for(int idx = 0 ; idx<nTests; idx++)
   { 
-    printf("%10s %10.6f %10.6f %14.6e\n", tests[idx].name, tests[idx].time, tests[idx].time/mintime, (nCycles*N)/tests[idx].time);
+    printf("%10s %10.6f %10.6f %11.3e %10.3f\n", tests[idx].name, tests[idx].time, tests[idx].time/mintime, (nRepeats*N)/tests[idx].time, (double) tests[idx].nCycles/ (double) (nRepeats*N));
   }
 
   free(A);
