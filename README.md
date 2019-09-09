@@ -13,6 +13,8 @@
  * The operators are called within a double loop-which has some overhead. 
    That is not compensated for.
 
+ * Surprises: `cbrt` vs `sqrt` as well as `round` vs `nearbyint`.
+
 ## Results
 
 ```
