@@ -15,6 +15,8 @@
 
  * Surprises: `cbrt` vs `sqrt` as well as `round` vs `nearbyint`.
 
+ * See also [https://latkin.org/blog/2014/11/09/a-simple-benchmark-of-various-math-operations/](https://latkin.org/blog/2014/11/09/a-simple-benchmark-of-various-math-operations/)
+
 ## Results
 
 ```
