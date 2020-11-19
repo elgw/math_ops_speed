@@ -46,107 +46,117 @@ static double clockdiff(struct timespec* start, struct timespec * finish)
 
 void op_plus(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = A[kk] + B[kk]; 
+    C[kk] = A[kk] + B[kk];
 }
 
 void op_minus(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = A[kk] - B[kk]; 
+    C[kk] = A[kk] - B[kk];
 }
 
 void op_div(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = A[kk] / B[kk]; 
+    C[kk] = A[kk] / B[kk];
 }
 
 void op_mult(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = A[kk] * B[kk]; 
+    C[kk] = A[kk] * B[kk];
 }
 
 void op_sqrt(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = sqrt(A[kk]); 
+    C[kk] = sqrt(A[kk]);
 }
 
 void op_cbrt(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = cbrt(A[kk]); 
+    C[kk] = cbrt(A[kk]);
 }
 
 void op_sin(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = sin(A[kk]); 
+    C[kk] = sin(A[kk]);
+}
+
+void op_j0(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+    for(size_t kk = 0; kk < N; kk++)
+        C[kk] = j0(A[kk]);
+}
+
+void op_j1(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
+    for(size_t kk = 0; kk < N; kk++)
+        C[kk] = j1(A[kk]);
 }
 
 void op_asin(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = asin(A[kk]); 
+    C[kk] = asin(A[kk]);
 }
 
 void op_sinh(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = sinh(A[kk]); 
+    C[kk] = sinh(A[kk]);
 }
 
 void op_log(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = log(A[kk]); 
+    C[kk] = log(A[kk]);
 }
 
 void op_log10(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = log10(A[kk]); 
+    C[kk] = log10(A[kk]);
 }
 
 void op_copysign(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = copysign(A[kk], B[kk]); 
+    C[kk] = copysign(A[kk], B[kk]);
 }
 
 void op_pow(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = pow(A[kk], B[kk]); 
+    C[kk] = pow(A[kk], B[kk]);
 }
 
 void op_exp(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = exp(A[kk]); 
+    C[kk] = exp(A[kk]);
 }
 
 void op_tan(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = tan(A[kk]); 
+    C[kk] = tan(A[kk]);
 }
 
 void op_atan(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = atan(A[kk]); 
+    C[kk] = atan(A[kk]);
 }
 
 void op_tanh(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = tanh(A[kk]); 
+    C[kk] = tanh(A[kk]);
 }
 
 void op_round(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = round(A[kk]); 
+    C[kk] = round(A[kk]);
 }
 
 void op_nearbyint(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = nearbyint(A[kk]); 
+    C[kk] = nearbyint(A[kk]);
 }
 
 void op_ceil(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = ceil(A[kk]); 
+    C[kk] = ceil(A[kk]);
 }
 
 void op_floor(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = floor(A[kk]); 
+    C[kk] = floor(A[kk]);
 }
 
 void op_max(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
@@ -165,17 +175,17 @@ void op_max(const double * restrict A, const double * restrict B, double * restr
 
 void op_isnormal(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = (double) isnormal(A[kk]); 
+    C[kk] = (double) isnormal(A[kk]);
 }
 
 void op_isnan(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = (double) isnan(A[kk]); 
+    C[kk] = (double) isnan(A[kk]);
 }
 
 void op_isinf(const double * restrict A, const double * restrict B, double * restrict C, const size_t N) {
   for(size_t kk = 0; kk < N; kk++)
-    C[kk] = (double) isinf(A[kk]); 
+    C[kk] = (double) isinf(A[kk]);
 }
 
 int main(int argc, char ** argv)
@@ -201,6 +211,8 @@ int main(int argc, char ** argv)
     {"asin",      op_asin,      0},
     {"sinh",      op_sinh,     0},
     {"log",       op_log,      0},
+    {"j0",        op_j0,       0},
+    {"j1",        op_j1,       0},
     {"log10",     op_log10,    0},
     {"copysign",  op_copysign, 0},
     {"pow",       op_pow,      0},
@@ -236,14 +248,14 @@ int main(int argc, char ** argv)
   //  timespec_get(&ts, TIME_UTC);
 
 
-  // Warm up 
+  // Warm up
   // - get cache state in order
-  tests[0].fun(A,B,C, N); 
+  tests[0].fun(A,B,C, N);
 
   for(int kk = 0; kk<nRepeats; kk++)
   {
     for(int idx = 0 ; idx<nTests; idx++)
-    { 
+    {
       tests[idx].nCycles = __rdtsc();
       clock_gettime(CLOCK_REALTIME, &ts);
       tests[idx].fun(A,B,C,N);
@@ -256,7 +268,7 @@ int main(int argc, char ** argv)
 
   double mintime = 99e99;
   for(int idx = 0 ; idx<nTests; idx++)
-  { 
+  {
     if(tests[idx].time < mintime)
     { mintime = tests[idx].time; }
   }
@@ -266,7 +278,7 @@ int main(int argc, char ** argv)
   printf("%10s %10s %10s %11s %10s\n", "operator", "time (s)", "rel. time", "op/s", "cyc/op");
   hline(58);
   for(int idx = 0 ; idx<nTests; idx++)
-  { 
+  {
     printf("%10s %10.6f %10.6f %11.3e %10.3f\n", tests[idx].name, tests[idx].time, tests[idx].time/mintime, (nRepeats*N)/tests[idx].time, (double) tests[idx].nCycles/ (double) (nRepeats*N));
   }
 
