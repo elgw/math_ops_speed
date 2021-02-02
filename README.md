@@ -1,21 +1,26 @@
 # Tests the speed of common mathematical operations
 
-## Notes
+Here is an attempt to benchmark common mathematical functions.
+
+Please note that:
+
  * For some operators/functions the speed changes with the
    values of the inputs. Change the code to match whatever
-   range that is of interest for you. 
+   range that is of interest for you.
 
  * There might be more clever ways to time the commands.
 
  * When the arrays are larger than the L3-cache size,
    speed is capped.
 
- * The operators are called within a double loop-which has some overhead. 
+ * The operators are called within a double loop-which has some overhead.
    That is not compensated for.
 
  * Surprises: `cbrt` vs `sqrt` as well as `round` vs `nearbyint`.
 
- * See also [https://latkin.org/blog/2014/11/09/a-simple-benchmark-of-various-math-operations/](https://latkin.org/blog/2014/11/09/a-simple-benchmark-of-various-math-operations/)
+## See also:
+* [Lincoln Atkinson's](https://latkin.org/blog/2014/11/09/a-simple-benchmark-of-various-math-operations/) code/results (C++).
+ * [Akseli Palén's](https://github.com/axelpale/js-math-ops-speed) code (JS) and his [comparison](https://www.akselipalen.com/2021/01/13/benchmark-of-elementary-mathematical-operations-in-node-js/) between these tests.
 
 ## Results
 
