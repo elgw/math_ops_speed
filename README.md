@@ -18,41 +18,53 @@ Please note that:
 
  * Surprises: `cbrt` vs `sqrt` as well as `round` vs `nearbyint`.
 
-## See also:
-* [Lincoln Atkinson's](https://latkin.org/blog/2014/11/09/a-simple-benchmark-of-various-math-operations/) code/results (C++).
- * [Akseli Palén's](https://github.com/axelpale/js-math-ops-speed) code (JS) and his [comparison](https://www.akselipalen.com/2021/01/13/benchmark-of-elementary-mathematical-operations-in-node-js/) between these tests.
+## Usage
+Tested on Ubuntu 22.04, no special dependencies besides a compiler. To
+spin up the cpu a command like `stress` could be used.
+
+``` shell
+make
+stress -t 1 -c 1; ./ops
+```
 
 ## Results
 
 ```
-$ ./ops 100000 ; ./ops 1000000
-
+AMD Ryzen 7 3700X 8-Core Processor
   operator   time (s)  rel. time        op/s     cyc/op
 ──────────────────────────────────────────────────────────
-     isnan   0.000271   1.000000   3.696e+09      0.109
-      ceil   0.000394   1.455108   2.540e+09      0.158
-     floor   0.000395   1.459303   2.533e+09      0.158
-     minus   0.000399   1.473184   2.509e+09      0.149
-      mult   0.000400   1.478273   2.500e+09      0.149
-      plus   0.000417   1.540535   2.399e+09      0.150
-     'max'   0.000421   1.557029   2.374e+09      0.151
-  isnormal   0.000449   1.658373   2.229e+09      0.179
- nearbyint   0.000481   1.779361   2.077e+09      0.191
-  copysign   0.000498   1.839439   2.009e+09      0.155
-       div   0.000501   1.851309   1.996e+09      0.191
-     isinf   0.000718   2.652649   1.393e+09      0.286
-      sqrt   0.001510   5.578819   6.625e+08      0.582
-     round   0.005421  20.035852   1.845e+08      2.173
-       exp   0.010057  37.169409   9.943e+07      4.030
-       sin   0.010885  40.229376   9.187e+07      4.348
-      asin   0.013252  48.977061   7.546e+07      5.317
-      sinh   0.014061  51.965578   7.112e+07      5.615
-      atan   0.016123  59.587848   6.202e+07      6.456
-      cbrt   0.016925  62.549549   5.908e+07      6.502
-       tan   0.018378  67.920183   5.441e+07      7.320
-       log   0.018592  68.710110   5.379e+07      7.430
-     log10   0.019066  70.464181   5.245e+07      7.685
-       pow   0.045005 166.327136   2.222e+07     17.994
+     isnan   0.000164   1.000000   6.115e+09      0.059
+ nearbyint   0.000164   1.000874   6.110e+09      0.059
+      mult   0.000231   1.414469   4.323e+09      0.084
+     'max'   0.000232   1.421691   4.301e+09      0.084
+     minus   0.000235   1.435927   4.259e+09      0.083
+      plus   0.000244   1.492197   4.098e+09      0.083
+  copysign   0.000252   1.538910   3.974e+09      0.083
+  isnormal   0.000257   1.570396   3.894e+09      0.093
+      ceil   0.000269   1.642675   3.723e+09      0.097
+     floor   0.000271   1.659064   3.686e+09      0.097
+       div   0.000299   1.829177   3.343e+09      0.107
+     isinf   0.000710   4.338680   1.409e+09      0.255
+      sqrt   0.002010  12.291136   4.975e+08      0.746
+     round   0.002827  17.287882   3.537e+08      1.019
+      powf   0.003088  18.883179   3.238e+08      1.098
+       log   0.003894  23.814617   2.568e+08      1.395
+       exp   0.004944  30.235636   2.022e+08      1.778
+      atan   0.006559  40.108058   1.525e+08      2.377
+       pow   0.006588  40.288622   1.518e+08      2.366
+     log10   0.007011  42.869970   1.426e+08      2.525
+      sinh   0.007096  43.394510   1.409e+08      2.550
+      asin   0.007125  43.568286   1.404e+08      2.570
+      cbrt   0.011627  71.102163   8.600e+07      4.191
+       sin   0.034938 213.647684   2.862e+07     12.548
+       tan   0.039110 239.159822   2.557e+07     14.135
+        j0   0.089347 546.355930   1.119e+07     32.118
+        j1   0.091927 562.132543   1.088e+07     32.967
+```
+
+
+```
+Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
 
   operator   time (s)  rel. time        op/s     cyc/op
 ──────────────────────────────────────────────────────────
@@ -82,40 +94,6 @@ $ ./ops 100000 ; ./ops 1000000
        pow   0.448946  61.783457   2.227e+07     18.007
 ```
 
-### System used:
-```
-$ lscpu
-Architecture:        x86_64
-CPU op-mode(s):      32-bit, 64-bit
-Byte Order:          Little Endian
-CPU(s):              8
-On-line CPU(s) list: 0-7
-Thread(s) per core:  2
-Core(s) per socket:  4
-Socket(s):           1
-NUMA node(s):        1
-Vendor ID:           GenuineIntel
-CPU family:          6
-Model:               94
-Model name:          Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-Stepping:            3
-CPU MHz:             800.012
-CPU max MHz:         4200.0000
-CPU min MHz:         800.0000
-BogoMIPS:            8016.00
-Virtualization:      VT-x
-L1d cache:           32K
-L1i cache:           32K
-L2 cache:            256K
-L3 cache:            8192K
-NUMA node0 CPU(s):   0-7
-Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
-```
-
-```
-$ gcc --version
-gcc (Ubuntu 9.1.0-2ubuntu2~18.04) 9.1.0
-Copyright (C) 2019 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-```
+## See also:
+* [Lincoln Atkinson's](https://latkin.org/blog/2014/11/09/a-simple-benchmark-of-various-math-operations/) code/results (C++).
+ * [Akseli Palén's](https://github.com/axelpale/js-math-ops-speed) code (JS) and his [comparison](https://www.akselipalen.com/2021/01/13/benchmark-of-elementary-mathematical-operations-in-node-js/) between these tests.
