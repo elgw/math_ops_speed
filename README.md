@@ -2,6 +2,11 @@
 
 Here is an attempt to benchmark common mathematical functions.
 
+Using the [Time Stamp
+Counter](https://en.wikipedia.org/wiki/Time_Stamp_Counter) to count
+CPU cycles and `clock_gettime(CLOCK_REALTIME, ..)` to measure elapsed
+time.
+
 Please note that:
 
  * For some operators/functions the speed changes with the
@@ -13,10 +18,12 @@ Please note that:
  * When the arrays are larger than the L3-cache size,
    speed is capped.
 
- * The operators are called within a double loop-which has some overhead.
-   That is not compensated for.
+ * The operators are called within a double loop. That overhead is not
+   compensated for.
 
- * Surprises: `cbrt` vs `sqrt` as well as `round` vs `nearbyint`.
+ * Surprises: `cbrt` much slower than `sqrt`. `nearbyint` much faster than `round`.
+
+ * Adjust the compiler flags as you like.
 
 ## Usage
 Tested on Ubuntu 22.04, no special dependencies besides a compiler. To
