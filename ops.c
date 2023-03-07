@@ -12,313 +12,132 @@ typedef void (*mop)(const double * restrict,
                     const size_t );
 
 typedef struct{
-  char * name;
-  mop fun;
-  double time;
-  uint64_t nCycles;
+    char * name;
+    mop fun;
+    double time;
+    uint64_t nCycles;
 } optest;
 
 int
-optest_sort_by_time(const void * A, const void * B)
+cmp_optest_time(const void * A, const void * B)
 {
-  optest * opA = (optest *) A;
-  optest * opB = (optest *) B;
+    optest * opA = (optest *) A;
+    optest * opB = (optest *) B;
 
-  if(opA->time > opB->time)
-    return 1;
-  if(opA->time < opB->time)
-    return -1;
-  return 0;
+    if(opA->time > opB->time)
+        return 1;
+    if(opA->time < opB->time)
+        return -1;
+    return 0;
 }
 
 void
 hline(int w)
 {
-  for(int kk = 0; kk<w; kk++)
-  {
-    printf("\x1b(0%c\x1b(B", (int) 0x71 );
-  }
-  printf("\n");
-  return;
+    for(int kk = 0; kk<w; kk++)
+    {
+        printf("\x1b(0%c\x1b(B", (int) 0x71 );
+    }
+    printf("\n");
+    return;
 }
 
 static double
 clockdiff(struct timespec* start, struct timespec * finish)
 {
-  double elapsed = (finish->tv_sec - start->tv_sec);
-  elapsed += (finish->tv_nsec - start->tv_nsec) / 1000000000.0;
-  return elapsed;
-}
-
-void
-op_plus(const double * restrict A, const double * restrict B, double * restrict C, const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = A[kk] + B[kk];
-}
-
-void
-op_minus(const double * restrict A, const double * restrict B, double * restrict C, const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = A[kk] - B[kk];
-}
-
-void
-op_div(const double * restrict A, const double * restrict B, double * restrict C, const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = A[kk] / B[kk];
-}
-
-void
-op_mult(const double * restrict A, const double * restrict B, double * restrict C, const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = A[kk] * B[kk];
-}
-
-void
-op_sqrt(const double * restrict A,
-        __attribute__ ((unused)) const double * restrict B,
-        double * restrict C,
-        const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = sqrt(A[kk]);
-}
-
-void
-op_cbrt(const double * restrict A,
-        __attribute__ ((unused)) const double * restrict B,
-        double * restrict C,
-        const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = cbrt(A[kk]);
-}
-
-void
-op_sin(const double * restrict A,
-       __attribute__ ((unused)) const double * restrict B,
-       double * restrict C, const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = sin(A[kk]);
-}
-
-void
-op_j0(const double * restrict A,
-      __attribute__ ((unused)) const double * restrict B,
-      double * restrict C,
-      const size_t N)
-{
-    for(size_t kk = 0; kk < N; kk++)
-        C[kk] = j0(A[kk]);
-}
-
-void
-op_j1(const double * restrict A,
-      __attribute__ ((unused)) const double * restrict B,
-      double * restrict C,
-      const size_t N)
-{
-    for(size_t kk = 0; kk < N; kk++)
-        C[kk] = j1(A[kk]);
-}
-
-void
-op_asin(const double * restrict A,
-        __attribute__ ((unused)) const double * restrict B,
-        double * restrict C,
-        const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = asin(A[kk]);
-}
-
-void
-op_sinh(const double * restrict A,
-        __attribute__ ((unused)) const double * restrict B,
-        double * restrict C, const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = sinh(A[kk]);
-}
-
-void
-op_log(const double * restrict A,
-       __attribute__ ((unused)) const double * restrict B,
-       double * restrict C, const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = log(A[kk]);
-}
-
-void
-op_log10(const double * restrict A,
-         __attribute__ ((unused)) const double * restrict B,
-         double * restrict C,
-         const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = log10(A[kk]);
-}
-
-void
-op_copysign(const double * restrict A,
-            __attribute__ ((unused)) const double * restrict B,
-            double * restrict C, const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = copysign(A[kk], B[kk]);
-}
-
-void
-op_pow(const double * restrict A,
-       __attribute__ ((unused)) const double * restrict B,
-       double * restrict C,
-       const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = pow(A[kk], B[kk]);
-}
-
-void
-op_powf(const double * restrict A,
-        __attribute__ ((unused)) const double * restrict B,
-        double * restrict C,
-        const size_t N)
-{
-    for(size_t kk = 0; kk < N; kk++)
-        C[kk] = powf(A[kk], B[kk]);
+    double elapsed = (finish->tv_sec - start->tv_sec);
+    elapsed += (finish->tv_nsec - start->tv_nsec) / 1000000000.0;
+    return elapsed;
 }
 
 
-void
-op_exp(const double * restrict A,
-       __attribute__ ((unused)) const double * restrict B,
-       double * restrict C,
-       const size_t N) {
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = exp(A[kk]);
-}
+#define ops_cat(x) op_ ## x
 
-void
-op_tan(const double * restrict A,
-       __attribute__ ((unused)) const double * restrict B,
-       double * restrict C,
-       const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = tan(A[kk]);
-}
+/* For operators taking one argument */
+#define op1(x)                                                          \
+    void                                                                \
+    ops_cat(x) (const double * restrict A,                              \
+                __attribute__ ((unused)) const double * restrict B,     \
+                double * restrict C,                                    \
+                const size_t N)                                         \
+    {                                                                   \
+        for(size_t kk = 0; kk < N; kk++)                                \
+            C[kk] = x (A[kk]);                                          \
+    }
 
-void
-op_atan(const double * restrict A,
-        __attribute__ ((unused)) const double * restrict B,
-        double * restrict C,
-        const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = atan(A[kk]);
-}
+/* For operators taking two arguments */
+#define op2(x)                                  \
+    void                                        \
+    ops_cat(x) (const double * restrict A,      \
+                const double * restrict B,      \
+                double * restrict C,            \
+                const size_t N)                 \
+    {                                           \
+        for(size_t kk = 0; kk < N; kk++)        \
+            C[kk] = x (A[kk], B[kk]);           \
+    }
 
-void
-op_tanh(const double * restrict A,
-        __attribute__ ((unused)) const double * restrict B,
-        double * restrict C,
-        const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = tanh(A[kk]);
-}
+/* For built in operators */
+#define opb(ONAME, OSYMBOL)                     \
+    void                                        \
+    ops_cat(ONAME) (const double * restrict A,  \
+                    const double * restrict B,  \
+                    double * restrict C,        \
+                    const size_t N)             \
+    {                                           \
+        for(size_t kk = 0; kk < N; kk++)        \
+            C[kk] = A[kk] OSYMBOL B[kk];        \
+    }
 
-void
-op_round(const double * restrict A,
-         __attribute__ ((unused)) const double * restrict B,
-         double * restrict C,
-         const size_t N) {
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = round(A[kk]);
-}
 
-void
-op_nearbyint(const double * restrict A,
-             __attribute__ ((unused)) const double * restrict B,
-             double * restrict C,
-             const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = nearbyint(A[kk]);
-}
+op1(sqrt);
+op1(cbrt);
+op1(sin);
+op1(j0);
+op1(j1);
+op1(asin);
+op1(sinh);
+op1(log);
+op1(log10);
 
-void
-op_ceil(const double * restrict A,
-        __attribute__ ((unused)) const double * restrict B,
-        double * restrict C,
-        const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = ceil(A[kk]);
-}
+op1(exp);
+op1(tan);
+op1(atan);
+op1(tanh);
+op1(round);
+op1(nearbyint);
+op1(ceil);
+op1(floor);
+op1(isinf);
+op1(isnan);
+op1(isnormal);
 
-void
-op_floor(const double * restrict A,
-         __attribute__ ((unused)) const double * restrict B,
-         double * restrict C,
-         const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = floor(A[kk]);
-}
+op2(pow);
+op2(powf);
+op2(copysign);
+
+opb(plus, +);
+opb(minus, -);
+opb(div, /);
+opb(mult, *);
+
 
 void
 op_max(const double * restrict A,
        const double * restrict B,
        double * restrict C,
        const size_t N) {
-  for(size_t kk = 0; kk < N; kk++)
-  {
-    if(A[kk] > B[kk])
+    for(size_t kk = 0; kk < N; kk++)
     {
-      C[kk] = A[kk];
-    } else {
-      C[kk] = B[kk];
+        if(A[kk] > B[kk])
+        {
+            C[kk] = A[kk];
+        } else {
+            C[kk] = B[kk];
+        }
     }
-  }
 }
 
-/* Non-double operators */
-
-void
-op_isnormal(const double * restrict A,
-            __attribute__ ((unused)) const double * restrict B,
-            double * restrict C,
-            const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = (double) isnormal(A[kk]);
-}
-
-void
-op_isnan(const double * restrict A,
-         __attribute__ ((unused)) const double * restrict B,
-         double * restrict C,
-         const size_t N) {
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = (double) isnan(A[kk]);
-}
-
-void
-op_isinf(const double * restrict A,
-         __attribute__ ((unused)) const double * restrict B,
-         double * restrict C,
-         const size_t N)
-{
-  for(size_t kk = 0; kk < N; kk++)
-    C[kk] = (double) isinf(A[kk]);
-}
 
 __attribute__ ((malloc)) double *
 double_rand(const size_t N, const double max)
@@ -334,98 +153,99 @@ double_rand(const size_t N, const double max)
 int main(int argc, char ** argv)
 {
 
-  size_t N = (size_t) 1e5;
+    size_t N = (size_t) 1e5;
 
-  if(argc>1)
-  {
-    N = atol(argv[1]);
-  }
+    if(argc>1)
+    {
+        N = atol(argv[1]);
+    }
 
-  int nRepeats = 10;
+    int nRepeats = 10;
 
-  optest tests[] = {
-      {"plus",      op_plus,      0, 0},
-      {"minus",     op_minus,     0, 0},
-      {"div",       op_div,       0, 0},
-      {"mult",      op_mult,      0, 0},
-      {"sqrt",      op_sqrt,      0, 0},
-      {"cbrt",      op_cbrt,      0, 0},
-      {"sin",       op_sin,       0, 0},
-      {"asin",      op_asin,      0, 0},
-      {"sinh",      op_sinh,      0, 0},
-      {"log",       op_log,       0, 0},
-      {"j0",        op_j0,        0, 0},
-      {"j1",        op_j1,        0, 0},
-      {"log10",     op_log10,     0, 0},
-      {"copysign",  op_copysign,  0, 0},
-      {"pow",       op_pow,       0, 0},
-      {"powf",      op_powf,      0, 0},
-      {"exp",       op_exp,       0, 0},
-      {"tan",       op_tan,       0, 0},
-      {"atan",      op_atan,      0, 0},
-      {"round",     op_round,     0, 0},
-      {"nearbyint", op_nearbyint, 0, 0},
-      {"isnormal",  op_isnormal,  0, 0},
-      {"isnan",     op_isnan,     0, 0},
-      {"isinf",     op_isinf,     0, 0},
-      {"ceil",      op_ceil,      0, 0},
-      {"floor",     op_floor,     0, 0},
-      {"'max'",     op_max,       0, 0},
-      {NULL,        NULL,         0, 0},
-  };
+    optest tests[] = {
+        {"plus",      op_plus,      0, 0},
+        {"minus",     op_minus,     0, 0},
+        {"div",       op_div,       0, 0},
+        {"mult",      op_mult,      0, 0},
+        {"sqrt",      op_sqrt,      0, 0},
+        {"cbrt",      op_cbrt,      0, 0},
+        {"sin",       op_sin,       0, 0},
+        {"asin",      op_asin,      0, 0},
+        {"sinh",      op_sinh,      0, 0},
+        {"log",       op_log,       0, 0},
+        {"j0",        op_j0,        0, 0},
+        {"j1",        op_j1,        0, 0},
+        {"log10",     op_log10,     0, 0},
+        {"copysign",  op_copysign,  0, 0},
+        {"pow",       op_pow,       0, 0},
+        {"powf",      op_powf,      0, 0},
+        {"exp",       op_exp,       0, 0},
+        {"tan",       op_tan,       0, 0},
+        {"atan",      op_atan,      0, 0},
+        {"round",     op_round,     0, 0},
+        {"nearbyint", op_nearbyint, 0, 0},
+        {"isnormal",  op_isnormal,  0, 0},
+        {"isnan",     op_isnan,     0, 0},
+        {"isinf",     op_isinf,     0, 0},
+        {"ceil",      op_ceil,      0, 0},
+        {"floor",     op_floor,     0, 0},
+        {"'max'",     op_max,       0, 0},
+        {NULL,        NULL,         0, 0},
+    };
 
-  int nTests = 0;
-  while(tests[nTests].name != 0)
-  { nTests++; }
+    int nTests = 0;
+    while(tests[nTests].name != 0)
+    { nTests++; }
 
-  double * A = double_rand(N, 1.0);
-  double * B = double_rand(N, 1.0);
-  double * C = calloc(N, sizeof(double));
+    double * A = double_rand(N, 1.0);
+    double * B = double_rand(N, 1.0);
+    double * C = calloc(N, sizeof(double));
 
-  struct timespec ts, te;
+    struct timespec ts, te;
 
-  // Warm up
-  // - get cache state in order
-  // - spin up the CPU with stress -t 1 first
-  tests[0].fun(A,B,C, N);
+    // Warm up
+    // - get cache state in order
+    // - spin up the CPU with stress -t 1 first
+    tests[0].fun(A,B,C, N);
 
-  for(int kk = 0; kk<nRepeats; kk++)
-  {
+    for(int kk = 0; kk<nRepeats; kk++)
+    {
+        for(int idx = 0 ; idx<nTests; idx++)
+        {
+            tests[idx].nCycles = __rdtsc();
+            clock_gettime(CLOCK_REALTIME, &ts);
+            tests[idx].fun(A,B,C,N);
+            clock_gettime(CLOCK_REALTIME, &te);
+            tests[idx].nCycles = __rdtsc() - tests[idx].nCycles;
+            tests[idx].time += clockdiff(&ts, &te);
+        }
+    }
+    printf("\n");
+
+    double mintime = 99e99;
     for(int idx = 0 ; idx<nTests; idx++)
     {
-      tests[idx].nCycles = __rdtsc();
-      clock_gettime(CLOCK_REALTIME, &ts);
-      tests[idx].fun(A,B,C,N);
-      clock_gettime(CLOCK_REALTIME, &te);
-      tests[idx].nCycles = __rdtsc() - tests[idx].nCycles;
-      tests[idx].time += clockdiff(&ts, &te);
+        if(tests[idx].time < mintime)
+        { mintime = tests[idx].time; }
     }
-  }
-  printf("\n");
 
-  double mintime = 99e99;
-  for(int idx = 0 ; idx<nTests; idx++)
-  {
-    if(tests[idx].time < mintime)
-    { mintime = tests[idx].time; }
-  }
+    qsort(tests, nTests, sizeof(optest), cmp_optest_time);
 
-  qsort(tests, nTests, sizeof(optest), optest_sort_by_time);
+    printf("%10s %10s %10s %11s %10s\n",
+           "operator", "time (s)", "rel. time", "op/s", "cyc/op");
+    hline(58);
+    for(int idx = 0 ; idx<nTests; idx++)
+    {
+        printf("%10s %10.6f %10.6f %11.3e %10.3f\n",
+               tests[idx].name,
+               tests[idx].time,
+               tests[idx].time/mintime,
+               (nRepeats*N)/tests[idx].time,
+               (double) tests[idx].nCycles/ (double) (nRepeats*N));
+    }
 
-  printf("%10s %10s %10s %11s %10s\n", "operator", "time (s)", "rel. time", "op/s", "cyc/op");
-  hline(58);
-  for(int idx = 0 ; idx<nTests; idx++)
-  {
-    printf("%10s %10.6f %10.6f %11.3e %10.3f\n",
-           tests[idx].name,
-           tests[idx].time,
-           tests[idx].time/mintime,
-           (nRepeats*N)/tests[idx].time,
-           (double) tests[idx].nCycles/ (double) (nRepeats*N));
-  }
-
-  free(A);
-  free(B);
-  free(C);
-  return EXIT_SUCCESS;
+    free(A);
+    free(B);
+    free(C);
+    return EXIT_SUCCESS;
 }
