@@ -276,6 +276,7 @@ int main(int argc, char ** argv)
     for(int kk = 0; kk<nRepeats; kk++)
     {
         rdtsc_init();
+        printf("dtfactor : %f\n", dtfactor);
         for(int idx = 0 ; idx<nTests; idx++)
         {
             // TODO: Either the time measurement or the
