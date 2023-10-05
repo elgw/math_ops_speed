@@ -1,11 +1,14 @@
 # Tests the speed of common mathematical operations
 
-Here is an attempt to benchmark common mathematical functions.
+Here is an attempt to benchmark common mathematical functions to get a
+feeling for their relative performance.
 
-Using the [Time Stamp
+Using `clock_gettime(CLOCK_REALTIME, ..)` to measure elapsed time. On
+x86_64: Using the [Time Stamp
 Counter](https://en.wikipedia.org/wiki/Time_Stamp_Counter) to count
-CPU cycles and `clock_gettime(CLOCK_REALTIME, ..)` to measure elapsed
-time.
+CPU cycles.  On AARch64 (Only tested on Rpi4), reading `cntvct_el0`,
+`cntfrq_el0` and the CPU frequency to estimate the number of
+cycles/operation.
 
 Please note that:
 
@@ -105,6 +108,43 @@ Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
         j1   0.114187 414.564443   8.758e+06     45.819
 ```
 
+```
+Raspberry PI4
+
+  operator   time (s)  rel. time        op/s     cyc/op
+──────────────────────────────────────────────────────────
+     floor   0.002287   1.000000   4.373e+08      0.373
+     isnan   0.002324   1.016272   4.303e+08      0.379
+      ceil   0.002350   1.027875   4.255e+08      0.374
+ nearbyint   0.002400   1.049685   4.166e+08      0.383
+     isinf   0.002812   1.229950   3.556e+08      0.438
+     sqrtf   0.003265   1.427753   3.063e+08      0.521
+     round   0.004408   1.927640   2.269e+08      0.705
+  isnormal   0.004857   2.123958   2.059e+08      0.773
+     minus   0.005145   2.250004   1.944e+08      0.823
+      mult   0.005194   2.271539   1.925e+08      0.803
+      plus   0.005717   2.500276   1.749e+08      0.973
+     'max'   0.006498   2.841738   1.539e+08      1.145
+  copysign   0.009042   3.954276   1.106e+08      1.488
+       div   0.009433   4.125196   1.060e+08      1.566
+       exp   0.011626   5.084324   8.602e+07      1.857
+      sinf   0.014047   6.143250   7.119e+07      1.965
+      powf   0.014161   6.193201   7.061e+07      2.331
+       log   0.016647   7.280262   6.007e+07      2.631
+       pow   0.016711   7.308372   5.984e+07      2.647
+      sqrt   0.017015   7.441374   5.877e+07      2.743
+      atan   0.022098   9.664031   4.525e+07      3.565
+     log10   0.027966  12.230368   3.576e+07      4.535
+      sinh   0.028756  12.575869   3.478e+07      4.639
+      asin   0.034940  15.280118   2.862e+07      5.449
+      cbrt   0.059032  25.816230   1.694e+07      9.537
+       sin   0.168528  73.702043   5.934e+06     26.999
+       tan   0.185013  80.911684   5.405e+06     29.960
+        j0   0.394902 172.702376   2.532e+06     63.921
+        j1   0.411871 180.123053   2.428e+06     66.693
+```
+
 ## See also:
 * [Lincoln Atkinson's](https://latkin.org/blog/2014/11/09/a-simple-benchmark-of-various-math-operations/) code/results (C++).
  * [Akseli Palén's](https://github.com/axelpale/js-math-ops-speed) code (JS) and his [comparison](https://www.akselipalen.com/2021/01/13/benchmark-of-elementary-mathematical-operations-in-node-js/) between these tests.
+ *  [Jim Cownie's Fun with Timers and cpuid](https://cpufun.substack.com/p/fun-with-timers-and-cpuid) for timings on AArch64.
