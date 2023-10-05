@@ -58,8 +58,8 @@ void rdtsc_init()
 {
     uint64_t cpufreq = get_cpufreq();
     uint64_t cntfreq = get_cntfrq();
-    dtfactor = (double) cpufreq / (double) cntfreq;
-}
+    dtfactor =  (double) cntfreq / (double) cpufreq;
+
 
 #define rdtsc get_cntvct
 
