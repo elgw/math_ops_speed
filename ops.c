@@ -7,19 +7,62 @@
 
 #ifdef __x86_64__
 #include <x86intrin.h>
+#define rdtsc_init()
 uint64_t rdtsc(void)
 {
     return __rdtsc();
 }
 #endif
 
+double dtfactor = 1;
+
 #ifdef __ARM_ARCH
-uint64_t rdtsc(void)
+// Constant rate timer
+uint64_t get_cntvct(void)
 {
     uint64_t val;
-    asm volatile("mrs %0, cntvct_el0" : "=r" (val));
+    __asm__ volatile("mrs %0, cntvct_el0" : "=r" (val));
     return val;
 }
+
+// The the clock of the timer
+uint64_t get_cntfrq(void)
+{
+  uint64_t val;
+  __asm__ volatile("mrs %0, cntfrq_el0" : "=r"(val));
+  return val;
+}
+
+// The clock of the CPU
+uint64_t get_cpufreq(void)
+{
+  char file[] = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq";
+  FILE * fid = fopen(file, "r");
+  if(fid == NULL)
+    {
+      fprintf(stderr, "Can't open %s\n", file);
+      return 0;
+    }
+  char * buf = malloc(128);
+  size_t nread = fread(buf, 1, 127, fid);
+  fclose(fid);
+  buf[nread] = '\0';
+  size_t val = atol(buf);
+  free(buf);
+  return val;
+}
+
+
+
+void rdtsc_init()
+{
+    uint64_t cpufreq = get_cpufreq();
+    uint64_t cntfreq = get_cntfrq();
+    dtfactor = cpufreq / cntfreq;
+}
+
+#define rtdsc get_cntvct
+
 #endif
 
 #include <stdint.h>
@@ -109,8 +152,10 @@ clockdiff(struct timespec* start, struct timespec * finish)
 
 
 op1(sqrt);
+op1(sqrtf);
 op1(cbrt);
 op1(sin);
+op1(sinf);
 op1(j0);
 op1(j1);
 op1(asin);
@@ -186,8 +231,10 @@ int main(int argc, char ** argv)
         {"div",       op_div,       0, 0},
         {"mult",      op_mult,      0, 0},
         {"sqrt",      op_sqrt,      0, 0},
+        {"sqrtf",     op_sqrtf,     0, 0},
         {"cbrt",      op_cbrt,      0, 0},
         {"sin",       op_sin,       0, 0},
+        {"sinf",      op_sinf,      0, 0},
         {"asin",      op_asin,      0, 0},
         {"sinh",      op_sinh,      0, 0},
         {"log",       op_log,       0, 0},
@@ -228,13 +275,17 @@ int main(int argc, char ** argv)
 
     for(int kk = 0; kk<nRepeats; kk++)
     {
+        rdtsc_init();
         for(int idx = 0 ; idx<nTests; idx++)
         {
+            // TODO: Either the time measurement or the
+            //       cycle measurement will be screwed if we try to do both at
+            //       the same time
             tests[idx].nCycles = rdtsc();
             clock_gettime(CLOCK_REALTIME, &ts);
             tests[idx].fun(A,B,C,N);
             clock_gettime(CLOCK_REALTIME, &te);
-            tests[idx].nCycles = rdtsc() - tests[idx].nCycles;
+            tests[idx].nCycles = (rdtsc() - tests[idx].nCycles) * dtfactor;
             tests[idx].time += clockdiff(&ts, &te);
         }
     }
