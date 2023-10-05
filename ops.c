@@ -61,7 +61,7 @@ void rdtsc_init()
     dtfactor = cpufreq / cntfreq;
 }
 
-#define rtdsc get_cntvct
+#define rdtsc get_cntvct
 
 #endif
 
