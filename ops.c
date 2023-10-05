@@ -3,7 +3,11 @@
 #include <math.h>
 #include <time.h>
 #include <unistd.h>
+
+#ifdef __x86_64__
 #include <x86intrin.h>
+#endif
+
 #include <stdint.h>
 
 typedef void (*mop)(const double * restrict,
