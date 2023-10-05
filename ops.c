@@ -1,11 +1,25 @@
+#include <math.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <time.h>
 #include <unistd.h>
 
 #ifdef __x86_64__
 #include <x86intrin.h>
+uint64_t rdtsc(void)
+{
+    return __rdtsc();
+}
+#endif
+
+#ifdef __ARM_ARCH
+uint64_t rtdsc(void)
+{
+    uint64_t val;
+    asm volatile("mrs %0, cntvct_el0" : "=r" (val));
+    return val;
+}
 #endif
 
 #include <stdint.h>
@@ -216,11 +230,11 @@ int main(int argc, char ** argv)
     {
         for(int idx = 0 ; idx<nTests; idx++)
         {
-            tests[idx].nCycles = __rdtsc();
+            tests[idx].nCycles = rdtsc();
             clock_gettime(CLOCK_REALTIME, &ts);
             tests[idx].fun(A,B,C,N);
             clock_gettime(CLOCK_REALTIME, &te);
-            tests[idx].nCycles = __rdtsc() - tests[idx].nCycles;
+            tests[idx].nCycles = rdtsc() - tests[idx].nCycles;
             tests[idx].time += clockdiff(&ts, &te);
         }
     }
