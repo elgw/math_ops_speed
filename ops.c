@@ -14,7 +14,7 @@ uint64_t rdtsc(void)
 #endif
 
 #ifdef __ARM_ARCH
-uint64_t rtdsc(void)
+uint64_t rdtsc(void)
 {
     uint64_t val;
     asm volatile("mrs %0, cntvct_el0" : "=r" (val));
