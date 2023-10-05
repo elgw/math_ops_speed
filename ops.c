@@ -59,6 +59,10 @@ void rdtsc_init()
     uint64_t cpufreq = get_cpufreq();
     uint64_t cntfreq = get_cntfrq();
     dtfactor =  (double) cntfreq / (double) cpufreq;
+    if(cpufreq == 0)
+    {
+        dtfactor = 0;
+    }
 }
 
 #define rdtsc get_cntvct
@@ -276,7 +280,7 @@ int main(int argc, char ** argv)
     for(int kk = 0; kk<nRepeats; kk++)
     {
         rdtsc_init();
-        printf("dtfactor : %f\n", dtfactor);
+
         for(int idx = 0 ; idx<nTests; idx++)
         {
             // TODO: Either the time measurement or the
