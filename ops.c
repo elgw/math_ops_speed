@@ -184,6 +184,7 @@ op1(log);
 op1(log10);
 
 op1(exp);
+op1(expf);
 op1(tan);
 op1(atan);
 op1(tanh);
@@ -265,6 +266,7 @@ int main(int argc, char ** argv)
         {"pow",       op_pow,       0, 0},
         {"powf",      op_powf,      0, 0},
         {"exp",       op_exp,       0, 0},
+        {"expf",      op_exp,       0, 0},
         {"tan",       op_tan,       0, 0},
         {"atan",      op_atan,      0, 0},
         {"round",     op_round,     0, 0},
