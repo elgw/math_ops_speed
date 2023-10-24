@@ -119,6 +119,19 @@ clockdiff(struct timespec* start, struct timespec * finish)
 #define ops_cat(x) op_ ## x
 
 /* For operators taking one argument */
+#define op0(x)                                                          \
+    void                                                                \
+    ops_cat(x) (__attribute__ ((unused)) const double * restrict A,     \
+                __attribute__ ((unused)) const double * restrict B,     \
+                double * restrict C,                                    \
+                const size_t N)                                         \
+    {                                                                   \
+        for(size_t kk = 0; kk < N; kk++)                                \
+            C[kk] = x ();                                               \
+    }
+
+
+/* For operators taking one argument */
 #define op1(x)                                                          \
     void                                                                \
     ops_cat(x) (const double * restrict A,                              \
@@ -154,6 +167,9 @@ clockdiff(struct timespec* start, struct timespec * finish)
             C[kk] = A[kk] OSYMBOL B[kk];        \
     }
 
+op0(rand);
+op0(random);
+op0(drand48);
 
 op1(sqrt);
 op1(sqrtf);
@@ -259,6 +275,9 @@ int main(int argc, char ** argv)
         {"ceil",      op_ceil,      0, 0},
         {"floor",     op_floor,     0, 0},
         {"'max'",     op_max,       0, 0},
+        {"rand",      op_rand,      0, 0},
+        {"random",    op_rand,      0, 0},
+        {"drand48",   op_rand,      0, 0},
         {NULL,        NULL,         0, 0},
     };
 
