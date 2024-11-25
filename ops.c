@@ -181,6 +181,7 @@ op1(j1);
 op1(asin);
 op1(sinh);
 op1(log);
+op1(log2);
 op1(log10);
 
 op1(exp);
@@ -261,6 +262,7 @@ int main(int argc, char ** argv)
         {"log",       op_log,       0, 0},
         {"j0",        op_j0,        0, 0},
         {"j1",        op_j1,        0, 0},
+        {"log2",      op_log2,      0, 0},
         {"log10",     op_log10,     0, 0},
         {"copysign",  op_copysign,  0, 0},
         {"pow",       op_pow,       0, 0},
